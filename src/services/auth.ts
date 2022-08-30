@@ -1,33 +1,21 @@
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
 
-type SignInRequestData = {
+interface SignInRequestData{
   email: string;
-  password: string;
+  password: string
 }
 
-const delay = (amount = 750) => new Promise(resolve => setTimeout(resolve, amount))
+const delay = async(qtd = 600) => new Promise(resolve => setTimeout(resolve, qtd))
 
-export async function signInRequest(data: SignInRequestData) {
-  await delay()
+export async function SignInRequest(data: SignInRequestData){
+ await delay();
 
-  return {
+  return{
     token: uuid(),
-    user: {
-      name: 'Diego Fernandes',
-      email: 'diego@rocketseat.com.br',
-      avatar_url: 'https://github.com/diego3g.png'
-    }
-  }
-}
-
-export async function recoverUserInformation() {
-  await delay()
-
-  return {
-    user: {
-      name: 'Diego Fernandes',
-      email: 'diego@rocketseat.com.br',
-      avatar_url: 'https://github.com/diego3g.png'
+    user:{
+      name: 'Thiago Mota',
+      email: 'Thiago@gmail.com',
+      avatar_url:'http://github.com/Thiago-Mota-Santos.png'
     }
   }
 }

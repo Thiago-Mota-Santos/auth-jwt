@@ -1,64 +1,48 @@
-import { createContext, useEffect, useState } from "react";
-import { setCookie, parseCookies } from 'nookies'
-import Router from 'next/router'
+import { createContext, useState } from "react";
+import { SignInRequest } from "../services/auth";
+import { setCookie } from "nookies";
+import Router from "next/router";
 
-import { recoverUserInformation, signInRequest } from "../services/auth";
-import { api } from "../services/api";
+interface signInData {
+  email: string;
+  password: string;
+}
 
-type User = {
+interface User {
   name: string;
   email: string;
   avatar_url: string;
 }
 
-type SignInData = {
-  email: string;
-  password: string;
-}
-
-type AuthContextType = {
-  isAuthenticated: boolean;
+interface IAuth {
+  isAuth: boolean;
   user: User;
-  signIn: (data: SignInData) => Promise<void>
+  signIn: (data: signInData) => Promise<void>;
 }
 
-export const AuthContext = createContext({} as AuthContextType)
+export const AuthContext = createContext({} as IAuth);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(null);
 
-  const isAuthenticated = !!user;
+  const isAuth = !!user;
 
-  useEffect(() => {
-    const { 'nextauth.token': token } = parseCookies()
-
-    if (token) {
-      recoverUserInformation().then(response => {
-        setUser(response.user)
-      })
-    }
-  }, [])
-
-  async function signIn({ email, password }: SignInData) {
-    const { token, user } = await signInRequest({
+  async function signIn({ email, password }: signInData) {
+    const { token, user } = await SignInRequest({
       email,
       password,
-    })
+    });
+    setCookie(undefined, "token", token, {
+      maxAge: 60 * 60 * 24, // 24 horas
+    });
 
-    setCookie(undefined, 'nextauth.token', token, {
-      maxAge: 60 * 60 * 1, // 1 hour
-    })
-
-    api.defaults.headers['Authorization'] = `Bearer ${token}`;
-
-    setUser(user)
-
-    Router.push('/dashboard');
+    setUser(user);
+    Router.push("/dashboard");
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
+    <AuthContext.Provider value={{ isAuth, user, signIn }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }

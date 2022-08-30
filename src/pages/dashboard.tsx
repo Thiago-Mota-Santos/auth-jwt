@@ -1,26 +1,24 @@
-import { Fragment, useContext, useEffect } from 'react'
-import Head from 'next/head'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import { parseCookies } from 'nookies'
-import { AuthContext } from '../contexts/AuthContext'
-import { api } from '../services/api'
-import { GetServerSideProps } from 'next'
-import { getAPIClient } from '../services/axios'
+import { Fragment, useContext, useEffect } from "react";
+import Head from "next/head";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { parseCookies } from "nookies";
+import { AuthContext } from "../contexts/AuthContext";
+import { GetServerSideProps } from "next";
 
-const navigation = ['Dashboard', 'Team', 'Projects', 'Calendar', 'Reports']
-const profile = ['Your Profile', 'Settings']
+const navigation = ["Dashboard", "Team", "Projects", "Calendar", "Reports"];
+const profile = ["Your Profile", "Settings"];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Dashboard() {
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     // api.get('/users');
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -47,7 +45,10 @@ export default function Dashboard() {
                         itemIdx === 0 ? (
                           <Fragment key={item}>
                             {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-                            <a href="#" className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
+                            <a
+                              href="#"
+                              className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+                            >
                               {item}
                             </a>
                           </Fragment>
@@ -105,8 +106,8 @@ export default function Dashboard() {
                                     <a
                                       href="#"
                                       className={classNames(
-                                        active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700'
+                                        active ? "bg-gray-100" : "",
+                                        "block px-4 py-2 text-sm text-gray-700"
                                       )}
                                     >
                                       {item}
@@ -117,7 +118,7 @@ export default function Dashboard() {
                               <Menu.Item>
                                 <a
                                   href="#"
-                                  className='block px-4 py-2 text-sm text-gray-700'
+                                  className="block px-4 py-2 text-sm text-gray-700"
                                 >
                                   Sign out
                                 </a>
@@ -149,7 +150,10 @@ export default function Dashboard() {
                   itemIdx === 0 ? (
                     <Fragment key={item}>
                       {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-                      <a href="#" className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">
+                      <a
+                        href="#"
+                        className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                      >
                         {item}
                       </a>
                     </Fragment>
@@ -174,8 +178,12 @@ export default function Dashboard() {
                     />
                   </div>
                   <div className="ml-3">
-                    <div className="text-base font-medium leading-none text-white">Diego Fernandes</div>
-                    <div className="text-sm font-medium leading-none text-gray-400">diego@rocketseat.com.br</div>
+                    <div className="text-base font-medium leading-none text-white">
+                      Thiago
+                    </div>
+                    <div className="text-sm font-medium leading-none text-gray-400">
+                      Thiago@gmail.com
+                    </div>
                   </div>
                   <button className="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span className="sr-only">View notifications</span>
@@ -220,25 +228,5 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
-  )
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const apiClient = getAPIClient(ctx);
-  const { ['nextauth.token']: token } = parseCookies(ctx)
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      }
-    }
-  }
-
-  await apiClient.get('/users')
-
-  return {
-    props: {}
-  }
+  );
 }

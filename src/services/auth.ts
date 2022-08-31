@@ -19,3 +19,14 @@ export async function SignInRequest(data: SignInRequestData){
     }
   }
 }
+
+export async function recoverUserInfo(){
+  await delay();
+  return{
+    user:{
+      name: 'Thiago Mota',
+      email: 'Thiago@gmail.com',
+      avatar_url:'http://github.com/Thiago-Mota-Santos.png'
+    }
+  }
+}

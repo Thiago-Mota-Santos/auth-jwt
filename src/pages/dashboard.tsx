@@ -5,6 +5,8 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import { parseCookies } from "nookies";
 import { AuthContext } from "../contexts/AuthContext";
 import { GetServerSideProps } from "next";
+import { api } from "../services/api";
+import { getApi } from "../services/getApi";
 
 const navigation = ["Dashboard", "Team", "Projects", "Calendar", "Reports"];
 const profile = ["Your Profile", "Settings"];
@@ -17,7 +19,7 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    // api.get('/users');
+    // api.get("/users");
   }, []);
 
   return (
@@ -220,13 +222,31 @@ export default function Dashboard() {
       </header>
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Replace with your content */}
           <div className="px-4 py-6 sm:px-0">
             <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
           </div>
-          {/* /End replace */}
         </div>
       </main>
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const apiClient = getApi(ctx);
+  const { token: token } = parseCookies(ctx);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  await apiClient.get("/users");
+
+  return {
+    props: {},
+  };
+};

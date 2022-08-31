@@ -1,9 +1,10 @@
-import { createContext, useState } from "react";
-import { SignInRequest } from "../services/auth";
-import { setCookie } from "nookies";
+import { createContext, useEffect, useState } from "react";
+import { recoverUserInfo, SignInRequest } from "../services/auth";
+import { setCookie, parseCookies } from "nookies";
 import Router from "next/router";
+import { api } from "../services/api";
 
-interface signInData {
+export interface signInData {
   email: string;
   password: string;
 }
@@ -27,6 +28,15 @@ export function AuthProvider({ children }) {
 
   const isAuth = !!user;
 
+  useEffect(() => {
+    const { token: token } = parseCookies();
+    if (token) {
+      recoverUserInfo().then((response) => {
+        setUser(response.user);
+      });
+    }
+  }, []);
+
   async function signIn({ email, password }: signInData) {
     const { token, user } = await SignInRequest({
       email,
@@ -36,6 +46,7 @@ export function AuthProvider({ children }) {
       maxAge: 60 * 60 * 24, // 24 horas
     });
 
+    api.defaults.headers["authorization"] = `bearer ${token}`;
     setUser(user);
     Router.push("/dashboard");
   }

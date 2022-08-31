@@ -7,11 +7,8 @@ export default function Home() {
   const { register, handleSubmit } = useForm();
   const { signIn } = useContext(AuthContext);
 
-  async function handleSignIn(data) {
+  async function handleSignIn(data: signInData) {
     await signIn(data);
-    console.log(data);
-    console.log("-------");
-    console.log(signIn(data));
   }
 
   return (
